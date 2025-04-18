@@ -1,0 +1,74 @@
+Thử tạo các bảng
+
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    Name NVARCHAR(100),
+    Email NVARCHAR(100)
+);
+
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    Name NVARCHAR(100),
+    Stock INT
+);
+
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT,
+    ProductID INT,
+    Quantity INT,
+    OrderDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+Tạo store sử dụng transaction
++ Kiểm tra hàng tồn trong kho xem có đủ số lượng để đặt hàng hay không?
++ Nếu đủ thì sẽ đặt hàng trong order và trừ số lượng tương ứng trong bảng product
+
+CREATE PROCEDURE PlaceOrder
+    @CustomerID INT,
+    @ProductID INT,
+    @Quantity INT
+AS
+BEGIN
+    BEGIN TRANSACTION;
+    BEGIN TRY
+        -- Kiểm tra tồn kho
+        DECLARE @Stock INT;
+        SELECT @Stock = Stock FROM Products WHERE ProductID = @ProductID;
+        
+        IF @Stock < @Quantity
+        BEGIN
+            RAISERROR('Không đủ hàng tồn kho!', 16, 1);
+        END
+
+        -- Trừ tồn kho
+        UPDATE Products
+        SET Stock = Stock - @Quantity
+        WHERE ProductID = @ProductID;
+
+        -- Tạo đơn hàng
+        INSERT INTO Orders (CustomerID, ProductID, Quantity)
+        VALUES (@CustomerID, @ProductID, @Quantity);
+
+        -- Commit giao dịch nếu không có lỗi
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        -- Rollback nếu có lỗi
+        ROLLBACK TRANSACTION;
+        PRINT ERROR_MESSAGE();
+    END CATCH
+END
+
+Test thử chương trình
+
+INSERT INTO Customers VALUES (1, 'Nguyen Van A', 'nguyenvana@email.com');
+INSERT INTO Products VALUES (101, 'Laptop Dell', 10);
+
+EXEC PlaceOrder @CustomerID = 1, @ProductID = 101, @Quantity = 5;
+
+-- Kiểm tra kết quả
+SELECT * FROM Orders;
+SELECT * FROM Products;
