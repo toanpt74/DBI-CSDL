@@ -72,3 +72,47 @@ EXEC PlaceOrder @CustomerID = 1, @ProductID = 101, @Quantity = 5;
 -- Kiểm tra kết quả
 SELECT * FROM Orders;
 SELECT * FROM Products;
+
+============================================================================================================
+//Thủ tục Cancel OrderID
+Thủ tục kiểm tra các thông tin về OrderID, CustomerID, ProductID
+Nếu thỏa mãn sẽ thực hiện cancel đặt hàng, trước khi cancel cần trả lại giá trị về hàng trong kho từ đơn hàng
+Create PROCEDURE CancelOrder
+@OrderID int
+AS
+Begin
+	BEGIN TRANSACTION;
+	BEGIN TRY
+		Declare @CustomerID int, @ProductID int, @Quantity int;
+		Select @CustomerID = CustomerID, @ProductID = ProductID, @Quantity = Quantity
+		From Orders Where OrderID= @OrderID
+		if @CustomerID is null or @ProductID is null
+		Begin
+			RAISERROR('Đơn hàng không tồn tại', 16,1);
+		End
+		Update Products 
+		SET Stock  = Stock + @Quantity
+		Where ProductID = @ProductID
+		Delete from Orders Where OrderID = @OrderID
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		PRINT ERROR_MESSAGE();
+	END CATCH
+End
+
+
+CREATE TABLE TransactionHistory (
+    TransactionID INT PRIMARY KEY IDENTITY(1,1),
+    OrderID INT,
+    CustomerID INT,
+    ProductID INT,
+    Quantity INT,
+    Action NVARCHAR(50), -- 'Đặt hàng' hoặc 'Hủy đơn'
+    ActionDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID)
+);
+
+INSERT INTO TransactionHistory (OrderID, CustomerID, ProductID, Quantity, Action)
+VALUES (@OrderID, @CustomerID, @ProductID, @Quantity, 'Hủy đơn');
