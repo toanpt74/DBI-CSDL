@@ -1,0 +1,3 @@
+update tblDeThi SET DT_Status = 1 Where CONVERT(DateTime, DT_Start) >= DATEADD(MINUTE,-5, GETDATE()) AND CONVERT(DateTime, DT_Start) <= DATEADD(MINUTE,5, GETDATE()) AND DT_Status=0
+
+update tblDeThi SET DT_Status = 0 where DATEADD(MINUTE,65, CONVERT(DateTime, DT_Start)) <=GETDATE() AND DT_Status=1
