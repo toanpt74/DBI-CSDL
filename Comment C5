@@ -1,0 +1,152 @@
+SLIDE 4
+Phụ thuộc hàm là một khái niệm thể hiện mối quan hệ giữa tập thuộc tính của quan hệ
+Gọi X là tập các thuộc tính của quan hệ R. X = {A1, A2, …, An}
+Y là tập các thuộc tính Y = {B1, B2, …, Bm}
+Một phụ thuộc hàm giữa X và Y kí hiệu là X -> Y  khi và chỉ khi với mọi bộ dữ liệu trong quan hệ R có cùng giá trị trên tập X thì cũng có cùng giá trị trên tập Y
+
+VD:  SinhVien(ID, Name, Address, DoB)
+Ta có phụ thuộc hàm là: ID -> Name, Address, DoB
+Vì ID là định danh duy nhất cho mỗi sinh viên, do vây nếu ta có bộ r1 và r2, nếu r1.ID = r2.ID thì r1.Name = r2.Name; t1.Address = r2.Address và r1.DoB = r2.DoB
+
+SLIDE 6
+Khóa chính -Primary key:  thuộc tính FK của quan hệ R thỏa mãn tính chất
++ Với mọi bộ ri , rj của quan hệ R nếu ri.FK = rj.FK thì ri.A = rj.A với mọi thuộc tính A thuộc tập các thuộc tính của quan hệ R
++ Siêu khóa – Super key: là tập các thuộc tính có thể xác định duy nhất một row trong quan hệ
++ Super key cũng là một key
++ Nếu K là khóa và L là super khóa thì K là tập con của L
+
+
+SLIDE 7
+Bổ đề Amstrong
+Xét quan hệ R với tập các thuộc tính A, và X, Y, Z là các tập con của A
+Luật phản xạ
+Nếu X là tập con của Y thì ta có Y -> X
+Luật tăng trưởng:
+Nếu X -> Y thì XZ -> YZ với mọi tập con Z
+Luật bắc cầu
+Nếu X -> Y và Y->Z thì X -> Z
+
+Luật kết hợp
+Nếu X -> Y và X->Z thì X->YZ
+Luật phân rã
+Nếu X->YZ thì X->Y và X->Z
+Luật giả bắc cầu
+Nếu X->Y và WY->Z thì WX->Z
+
+
+
+SLIDE 8
+Xét tập các phụ thuộc hàm S và tập các phụ thuộc hàm T
+Ta nói rằng T -> S nếu mọi phụ thuộc hàm trong S đều có thể suy ra được từ các phụ thuộc hàm trong T bằng cách áp dụng các quy tắc suy diễn của phụ thuộc hàm
+Luật phản xạ: Nếu Y là tập con của X thì X->Y
+Luật tang cường: X->Y thì XZ->YZ
+Luật bắc cầu: X->Y và Y->Z thì X->Z
+
+SLIDE 9
+Bao đóng của tập phụ thuộc hàm
+Xét tập các thuộc tính A ={A1, A2,…,An}
+Và tập phụ thuộc hàm S. 
+Bao đóng của A với tập các phụ thuộc hàm S kí hiệu là A+
+A+ là tập các thuộc tính B thỏa mãn tính chất: A1A2…An -> B
+Cách tìm bao đóng
+Xét X = {A1, A2,..,An}
+Đặt X+ = X
+Nếu tồn tại một phụ thuộc hàm  A->B trong S, và A đã có trong X+, thì them B vào X+
+Lặp lại bước 2 cho đến khi không còn thuộc tính mới nào được them vào X+.
+
+
+SLIDE 11
+A+ = {A, B, C, D}
+B+ = {B, C, D}
+
+SLIDE 12
+Phủ tối thiểu của phụ thuộc hàm là một tập phụ thuộc hàm tương đương với một tập F, nhưng có dạng tối giản theo 3 tiêu chí
+Về phải chỉ chứa một thuộc tính đơn: có dạng X->Y, với Y là một thuộc tính đơn lẻ
+Không có phụ thuộc hàm dư thừa (loại bỏ các phụ thuộc hàm có thể suy ra từ các phụ thuộc hàm khác)
+Không có thuộc tính dư thừa trong vế trái (nếu loại bỏ một thuộc tính khỏi vế trái của phụ thuộc hàm mà vẫn không làm thay đổi phụ thuộc hàm thì thuộc tính đó là dư thừa)
+
+SLIDE 15
+Phép chiếu phụ thuộc hàm là một kỹ thuật nhằm xác định tập phụ thuộc hàm có liên quan đến một tập thuộc tính con của quan hệ R
+Đ/n: Cho một tập phụ thuộc hàm F trên tập các thuộc tính của quan hệ A, và một tập con X của A
+Phép chiếu Fx là tập tất cả các phụ thuộc hàm có thể suy diễn ra từ F nhưng chỉ sử dụng các thuộc tính có trong X
+
+ 
+SLIDE 16
+Thuật toán:
+Input: R, R1=L(R), S là tập các phụ thuộc hàm 
+Output: tập các phụ thuộc hàm trên R1
+Algorithm
+Khởi tạo T là tập các phụ thuộc hàm trên R1, ban đầu T = rỗng
+Với mỗi thuộc tính X của R1, tính X+ và thêm vào T tất cả các phụ thuộc hàm không tầm thường có dạng X ->A, với A là thuộc tính của cả X+ và R1
+Xây dựng phủ tối thiểu từ T
+
+SLIDE 17
+Tìm phủ tối thiểu từ T
++ Loại bỏ các phụ thuộc hàm dư thừa
++ Loại bỏ các thuộc tính dư thừa bên trái phụ thuộc hàm
+
+
+SLIDE 19
+ T ={}
+Xét A => A+ = {A, B, C, D}
+Vậy Thêm các phụ thuộc hàm có dạng A->Z (Z thuộc cả A+ và R1 ={A, C, D})
+ A->C, A->D vào T
+
+C+ = {C, D}
+Thêm các phụ thuộc hàm có dạng C -> Z(Z thuộc C+ và R1={A, C, D})
+C -> D
+
+D+ ={D}, không có phụ thuộc hàm mới
+
+Vậy T={ A->C; A->D; C->D}
+Trong đó phụ thuộc hàm A->D có thể bắc cầu từ hai phụ thuộc hàm còn lại
+Do vậy phủ tối thiểu là T ={A->C; C->D}
+
+
+
+SLIDE 29
+Một số định nghĩa
+Thuộc tính đa giá trị: các thuộc tính có thể chứa nhiều giá trị khác nhau cho cùng một bản ghi
+Ví dụ: SinhVien(ID, Name, Phone), thuộc tính Phone là thuộc tính đa giá trị vì mỗi SV có thể có nhiều số điện thoại
+
+Partial Dependency: phụ thuộc bộ phận: một thuôc tính không khóa phụ thuộc một phần vào khóa chính
+Ví dụ: Score(StudentId, SubjectId, StudentName, SubjectName)
+Primary key = (StudentId, SubjectId)
+Tuy nhiên StudentName chỉ phụ thuộc vào StudentId
+
+Phụ thuộc bắc cầu
+
+
+SLIDE 30
+Chuẩn 1NF
++ Tất cả các thuộc tính đều là thuộc tính đơn trị
+Ví dụ: quan hệ Student như trong bảng trên không phải chuẩn 1 NF
+Subject, Grade, SubjectCost là các thuộc tính đa trị
+
+SLIDE 31
+Chuyển về chuẩn 1 NF
+
+SLIDE 32
+Tách làm nhiều row, đảm bảo mỗi row các thuộc tính chỉ chứa một giá trị
+
+SLIDE 33
+StudentID không còn là khóa chính của quan hệ
+Vậy chọn (StudentID, Subject) làm khóa chính của quan hệ
+
+SLIDE 34
+Quan hệ này đã là chuẩn 1NF, tuy nhiên quan hệ đã là chuẩn 2NF chưa?
+SLIDE 35
+Quan hệ R là chuẩn 2NF nếu nó là chuẩn 1NF và tất cả các thuộc tính không khóa phải phụ thuộc đầy đủ vào khóa chính
+Quan hệ này có khóa chính là (StudentId, Subject). 
+Tuy nhiên các thuộc tính StudentName, Address chỉ phụ thuộc vào StudentId => Quan hệ này không phải khóa chính của quan hệ
+
+SLIDE 52
+Chuẩn 3NF
+Một quan hệ là chuẩn 3NF nếu đã là chuẩn 2NF và tất cả các thuộc tính không khóa không được phụ thuộc bắc cầu vào khóa chính
+
+SLIDE 65
+Chuẩn BCNF:
+Quan hệ R là chuẩn BCNF nếu R là chuẩn 3NF và mọi phụ thuộc hàm trong quan hệ R đều có khóa chính làm vế trái, nghĩa là nếu tồn tại phụ thuộc hàm dạng X->Y thì X phải là siêu khóa
+
+
+
